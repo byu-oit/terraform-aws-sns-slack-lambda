@@ -1,36 +1,32 @@
-![Latest GitHub Release](https://img.shields.io/github/v/release/byu-oit/terraform-aws-<module_name>?sort=semver)
+![Latest GitHub Release](https://img.shields.io/github/v/release/byu-oit/terraform-aws-sns-slack-lambda?sort=semver)
 
-# Terraform Module Template
-GitHub template to quickly create Terraform modules
+# SNS to Slack Lambda
 
-## To Use Template
-1. Click the "Use this template" button 
-2. Name your terraform module repo as `terraform-aws-<module_name>` (if creating non-AWS module change `aws` to the cloud provider)
-3. Rename this README's title to the title you named your repo in #2
-4. Update the shield badge URL to match the module's repo at the top of this README
-5. Update this README to match the module's title (in the usage section)
-6. Update `examples/simple/simple-example.tf` to match the module's title
-7. Update the `reviewers` section in the [dependabot.yml](.github/dependabot.yml) file.
-8. Remove [this section](#to-use-template) from the README
+Terraform module to create a Lambda that can transform SNS notifications and send them to Slack.
 
 #### [New to Terraform Modules at BYU?](https://devops.byu.edu/terraform/index.html)
 
 ## Usage
+
 ```hcl
-module "<module_name>" {
-  source = "github.com/byu-oit/terraform-aws-<module_name>?ref=v1.0.0"
+module "sns_slack_lambda" {
+  source = "github.com/byu-oit/terraform-aws-sns-slack-lambda?ref=v1.0.0"
 }
 ```
 
 ## Requirements
-* Terraform version 0.12.0 or greater
+
+* Terraform version 0.12.31 or greater
+* AWS provider version 3.0.0 or greater
 
 ## Inputs
+
 | Name | Type  | Description | Default |
 | --- | --- | --- | --- |
 | | | | |
 
 ## Outputs
+
 | Name | Type | Description |
 | ---  | ---  | --- |
 | | | |
