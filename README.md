@@ -32,9 +32,10 @@ module "sns_slack_lambda" {
 | memory_size | number | The amount of memory for the function | 128 |
 | private_subnet_ids | list (string) | A list of subnet IDs in the private subnet of the VPC. |
 | role_permissions_boundary | string | The ARN of the role permissions boundary to attach to the Lambda role. |
+| send_to_slack | boolean | Whether or not to actually send messages to Slack. Recommended to be false for all environments except production. | true |
 | slack_webhook_url | string | The webhook URL to use when sending messages to Slack. This value contains a secret and should be kept safe. |
 | timeout | number | The number of seconds the function is allowed to run. | 30 |
-| tags | map(string) | A map of AWS Tags to attach to each resource created. |
+| tags | map(string) | A map of AWS Tags to attach to each resource created. | {} |
 | vpc_id | string | The ID of the VPC the Lambda should be in. |
 
 
@@ -42,4 +43,8 @@ module "sns_slack_lambda" {
 
 | Name | Type | Description |
 | ---  | ---  | --- |
-| lambda_function_arn | string | The ARN of teh Lambda function created. |
+| lambda_function_arn | string | The ARN of the Lambda function created. |
+
+# Deployment
+
+When developing this module, if you update the Lambda code, be sure to run `zip -r function.zip .` in the `lamba` folder so your code changes are bundled with the module.

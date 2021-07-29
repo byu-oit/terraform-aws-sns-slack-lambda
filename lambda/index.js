@@ -35,6 +35,8 @@ function _sendSlackMessage (messageText, webhookUrl) {
   }
 
   return new Promise((resolve, reject) => {
+    if (process.env.SEND_TO_SLACK === 'false') resolve()
+
     const req = https.request(options, function (res) {
       if (res.statusCode >= 400) {
         reject(new Error(`[Slack API Error] ${res.statusCode} - ${res.statusMessage}`))

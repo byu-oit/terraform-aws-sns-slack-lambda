@@ -17,6 +17,7 @@ resource "aws_lambda_function" "sns_to_slack" {
 
   environment {
     variables = {
+      SEND_TO_SLACK     = var.send_to_slack
       SLACK_WEBHOOK_URL = var.slack_webhook_url
     }
   }

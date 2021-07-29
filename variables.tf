@@ -3,6 +3,12 @@ variable "app_name" {
   description = "The application name to include in the name of resources created."
 }
 
+variable "send_to_slack" {
+  type = boolean
+  description = "Whether or not to actually send messages to Slack. Recommended to be false for all environments except production."
+  default = true
+}
+
 variable "log_retention_in_days" {
   type        = number
   description = "The number of days to retain logs for the sns-to-slack Lambda."
