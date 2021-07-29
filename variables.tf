@@ -33,7 +33,7 @@ variable "slack_webhook_url" {
 
 variable "timeout" {
   type        = number
-  description = "The amount of time the function is allowed to run."
+  description = "The number of seconds the function is allowed to run."
   default     = 30
 }
 
