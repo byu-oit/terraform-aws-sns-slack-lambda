@@ -18,7 +18,7 @@ module "sns_slack_lambda" {
 
 ### Limitations
 
-Because of [limitations with Terraform](https://www.terraform.io/docs/language/meta-arguments/for_each.html#limitations-on-values-used-in-for_each), add this module after the initial deployment of your application to a new environment. Otherwise, you'll get an error similar to this:
+Because of [limitations with Terraform](https://www.terraform.io/docs/language/meta-arguments/for_each.html#limitations-on-values-used-in-for_each), SNS Topics you want integrating with this module should be created in your one-time setup resources. You can tehn include this module in your app resources as normal. If that's not possible, you must add this module to your app resources after the initial deployment of your application to a new environment and creation of the SNS Topic it will integrate with. Otherwise, you'll get an error similar to this:
 
 ```bash
 Error: Invalid for_each argument
