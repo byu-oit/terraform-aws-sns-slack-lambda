@@ -17,6 +17,3 @@ override.tf.json
 
 # Ignore jetbrains .idea folder
 .idea
-
-# Built Lambda file
-lambda/function.zip
