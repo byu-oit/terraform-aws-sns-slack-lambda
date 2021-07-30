@@ -9,12 +9,26 @@ Terraform module to create a Lambda that can transform SNS notifications and sen
 ## Usage
 
 1. Create a [Slack webhook](https://api.slack.com/messaging/webhooks) and generate a webhook URL.
-2. Include this module in your project.
 
 ```hcl
 module "sns_slack_lambda" {
   source = "github.com/byu-oit/terraform-aws-sns-slack-lambda?ref=v1.0.0"
 }
+```
+
+### Limitations
+
+Because of [limitations with Terraform](https://www.terraform.io/docs/language/meta-arguments/for_each.html#limitations-on-values-used-in-for_each), add this module after the initial deployment of your application to a new environment. Otherwise, you'll get an error similar to this:
+
+```bash
+Error: Invalid for_each argument
+  on ../../main.tf line 75, in resource "aws_lambda_permission" "with_sns":
+  75:   for_each      = var.sns_topic_arns
+
+The "for_each" value depends on resource attributes that cannot be determined
+until apply, so Terraform cannot predict how many instances will be created.
+To work around this, use the -target argument to first apply only the
+resources that the for_each depends on.
 ```
 
 ## Requirements
