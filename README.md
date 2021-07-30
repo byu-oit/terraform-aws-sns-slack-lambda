@@ -12,7 +12,7 @@ Terraform module to create a Lambda that can transform SNS notifications and sen
 
 ```hcl
 module "sns_slack_lambda" {
-  source = "github.com/byu-oit/terraform-aws-sns-slack-lambda?ref=v1.0.0"
+  source = "github.com/byu-oit/terraform-aws-sns-slack-lambda?ref=v1.0.1"
 }
 ```
 
