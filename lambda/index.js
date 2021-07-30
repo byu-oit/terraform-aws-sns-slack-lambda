@@ -1,27 +1,31 @@
 const https = require('https')
 const URL = require('url').URL
 
-exports.handler = function (event, context) {
+exports.handler = async function (event, context) {
   console.debug('Event: ' + JSON.stringify(event, null, 2))
-
+  if (process.env.SEND_TO_SLACK === 'false') context.succeed("Skipping sending Slack messages")
   const webhookUrl = new URL(process.env.SLACK_WEBHOOK_URL)
-  const requestPromises = []
-  for (const record of event.Records) {
-    requestPromises.push(_sendSlackMessage(record.Sns.Message, webhookUrl))
-  }
-
-  Promise.all(requestPromises).then(() => {
-    console.info('All messages send successfully.')
-  }).catch(e => {
+  try {
+    await Promise.all(event.Records.map(record => _sendSlackMessage(record.Sns.Message, webhookUrl)))
+    console.info('All messages sent successfully.')
+  } catch (e) {
     console.error(e)
     context.fail(e)
-  })
+  }
+}
+
+// https://api.slack.com/reference/surfaces/formatting#escaping
+const ampRegex = /&/g
+const ltRegex = /</g
+const gtRegex = />/g
+function escapeForSlack (string) {
+  return string.replace(ampRegex, '&amp;').replace(ltRegex, '&lt;').replace(gtRegex, '&gt;')
 }
 
 function _sendSlackMessage (messageText, webhookUrl) {
   const data = JSON.stringify({
     type: 'mrkdwn',
-    text: `*[${process.env.APP_NAME.toUpperCase()}]* ${messageText}`
+    text: `*[${process.env.APP_NAME.toUpperCase()}]* ${escapeForSlack(messageText)}`
   })
 
   const options = {
@@ -36,8 +40,6 @@ function _sendSlackMessage (messageText, webhookUrl) {
   }
 
   return new Promise((resolve, reject) => {
-    if (process.env.SEND_TO_SLACK === 'false') resolve()
-
     const req = https.request(options, function (res) {
       if (res.statusCode >= 400) {
         reject(new Error(`[Slack API Error] ${res.statusCode} - ${res.statusMessage}`))
