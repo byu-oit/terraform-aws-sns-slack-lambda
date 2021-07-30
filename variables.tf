@@ -1,12 +1,12 @@
 variable "app_name" {
   type        = string
-  description = "The application name to include in the name of resources created."
+  description = "The application name to include in the name of resources created. Displayed as a prefix to the Slack message."
 }
 
 variable "send_to_slack" {
-  type = boolean
+  type        = bool
   description = "Whether or not to actually send messages to Slack. Recommended to be false for all environments except production."
-  default = true
+  default     = true
 }
 
 variable "log_retention_in_days" {
@@ -35,6 +35,11 @@ variable "slack_webhook_url" {
   type        = string
   description = "The webhook URL to use when sending messages to Slack. This value contains a secret and should be kept safe."
   sensitive   = true
+}
+
+variable "sns_topic_arns" {
+  type        = set(string)
+  description = "The ARNs of the SNS topics you want to see messages for in Slack."
 }
 
 variable "timeout" {

@@ -5,18 +5,24 @@ terraform {
   }
 }
 
+locals {
+  filename = "${path.module}/lambda/function.zip"
+}
+
 resource "aws_lambda_function" "sns_to_slack" {
-  function_name = "${var.app_name}-sns-to-slack"
-  filename      = "${path.module}/lambda/function.zip"
-  handler       = "index.handler"
-  runtime       = "nodejs14.x"
-  role          = aws_iam_role.sns_to_slack.arn
-  timeout       = var.timeout
-  memory_size   = var.memory_size
-  tags          = var.tags
+  function_name    = "${var.app_name}-sns-to-slack"
+  filename         = local.filename
+  handler          = "index.handler"
+  runtime          = "nodejs14.x"
+  role             = aws_iam_role.sns_to_slack.arn
+  timeout          = var.timeout
+  memory_size      = var.memory_size
+  source_code_hash = filebase64sha256(local.filename)
+  tags             = var.tags
 
   environment {
     variables = {
+      APP_NAME          = var.app_name
       SEND_TO_SLACK     = var.send_to_slack
       SLACK_WEBHOOK_URL = var.slack_webhook_url
     }
@@ -71,6 +77,21 @@ resource "aws_iam_role_policy_attachment" "logging_eni_attach" {
 }
 
 resource "aws_cloudwatch_log_group" "logging" {
-  name              = "/aws/lambda/${aws_lambda_function.logging.function_name}"
+  name              = "/aws/lambda/${aws_lambda_function.sns_to_slack.function_name}"
   retention_in_days = var.log_retention_in_days
+}
+
+resource "aws_lambda_permission" "with_sns" {
+  for_each      = var.sns_topic_arns
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.sns_to_slack.function_name
+  principal     = "sns.amazonaws.com"
+  source_arn    = each.key
+}
+
+resource "aws_sns_topic_subscription" "lambda" {
+  for_each  = var.sns_topic_arns
+  topic_arn = each.key
+  protocol  = "lambda"
+  endpoint  = aws_lambda_function.sns_to_slack.arn
 }

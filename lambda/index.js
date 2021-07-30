@@ -20,7 +20,8 @@ exports.handler = function (event, context) {
 
 function _sendSlackMessage (messageText, webhookUrl) {
   const data = JSON.stringify({
-    text: messageText
+    type: 'mrkdwn',
+    text: `*[${process.env.APP_NAME.toUpperCase()}]* ${messageText}`
   })
 
   const options = {
