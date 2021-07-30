@@ -6,7 +6,7 @@ exports.handler = async function (event, context) {
   if (process.env.SEND_TO_SLACK === 'false') context.succeed("Skipping sending Slack messages")
   const webhookUrl = new URL(process.env.SLACK_WEBHOOK_URL)
   try {
-    await Promise.all(event.Records.map(record => _sendSlackMessage(record.Sns.Message, webhookUrl)))
+    await Promise.all(event.Records.map(record => _sendSlackMessage(record.Sns.Message ?? record.Sns.ErrorMessage, webhookUrl)))
     console.info('All messages sent successfully.')
   } catch (e) {
     console.error(e)
