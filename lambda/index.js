@@ -22,10 +22,19 @@ function escapeForSlack (string) {
   return string.replace(ampRegex, '&amp;').replace(ltRegex, '&lt;').replace(gtRegex, '&gt;')
 }
 
+function formatJson(unparsedString) {
+  try {
+    const parsedData = JSON.parse(unparsedString)
+    return JSON.stringify(parsedData, null, 2)
+  } catch (e) {
+    return unparsedString
+  }
+}
+
 function _sendSlackMessage (messageText, webhookUrl) {
   const data = JSON.stringify({
     type: 'mrkdwn',
-    text: `*[${process.env.APP_NAME.toUpperCase()}]* ${escapeForSlack(messageText)}`
+    text: `*[${process.env.APP_NAME.toUpperCase()}]* \n` + '```' + formatJson(escapeForSlack(messageText)) + '```'
   })
 
   const options = {
